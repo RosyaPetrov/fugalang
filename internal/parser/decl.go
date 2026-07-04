@@ -22,3 +22,18 @@ func (p *Parser) module() int {
 	}
 	return -1 // TODO сделать ошибку
 }
+
+func (p *Parser) let() int {
+	p.next()
+	if !p.match(LET) {
+
+	}
+
+	if !p.match(IDENTIFIER) {
+
+	}
+
+	return p.addNode(ast.Node{
+		Type: ast.LetDecl,
+	})
+}
