@@ -58,6 +58,7 @@ const (
 	Template
 
 	ModuleDecl
+	LetDecl
 )
 
 const (
