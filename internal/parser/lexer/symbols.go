@@ -138,7 +138,7 @@ func (lex *Lexer) readQuestion() Kind {
 	case lex.accept('.'):
 		return OPTIONAL_DOT
 	default:
-		return ILLEGAL
+		return QUESTION
 	}
 }
 

@@ -115,6 +115,7 @@ const (
 	RTN_ARROW    // ->
 	PIPE         // |>
 	DEFAULT      // ?:
+	QUESTION     // ?
 	OPTIONAL_DOT // ?.
 	REF          // &
 	CHAN_SEND    // <-
@@ -423,6 +424,8 @@ func (tk Kind) String() string {
 		return "PIPE"
 	case DEFAULT:
 		return "DEFAULT"
+	case QUESTION:
+		return "QUESTION"
 	case OPTIONAL_DOT:
 		return "OPTIONAL_DOT"
 	case L_PAREN:
