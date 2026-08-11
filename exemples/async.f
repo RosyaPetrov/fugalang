@@ -17,37 +17,57 @@ struct User {
 }
 
 impl User {
-    fn New(
-        name: str :? "",
-        username: str :? ""
-    ) -> User {
+    fn New(name: str := "", username: str := "") -> User {
         let user: mut User = User{}
 
-        user.Id = uuid::new()
-        user.Name = name
-        user.Username = username
+        user.{
+            Id = uuid::new(),
+            Name = name,
+            Username = username,
+        }
 
         user
     }
 }
 
-fn getuser(url: str) -> Result<User, String> {
-    let result = net::get<User>(url)::await()
+#[async] fn sub_user_update(ctx &context::Context, url &str, user: Option<mut &User> := None) -> Result<User, str> {
+    let lresult: Result<User, str> = getuser(url)
+    goto SEND_DATA
 
-    match result {
-        Ok(user) => {
-            Ok(user)
+    START_SUB:
+    for fn(lresult: mut &Result<User, str>)(lresult) bool { 
+        let result: Result<User, str> = getuser(url)
+        if !(lresult == result) {
+            lresult = result
+            return false
         }
-
-        Err(err) => {
-            std::log("Error: &{err}")
-            Err(err)
-        }
+        return true
+    } {
+       time::sleep(1 * time::second) 
     }
+
+    if !ctx.isactive() {
+        return Err("Context is inactive")
+
+    }
+
+    SEND_DATA:
+    if !(user == none) {
+        user.Value(lresult)
+    }
+
+    async::return lresult
+    goto START_SUB
+}
+
+fn getuser(url: &str) -> Result<User, str> {
+    let result: Result<User, str> = net::get<User>(url)
+    result
 }
 
 fn main() -> i8 {
-    let result = getuser("https://example.com/user")::await()
+    linkuser := "https://example.com/user"
+    let result: Result<User, str> = getuser(&linkuser)
 
     match result {
         Ok(user) => {
@@ -55,9 +75,27 @@ fn main() -> i8 {
         }
 
         Err(err) => {
-            std::log("Failed to get user: &{err}")
+            std::print("Failed to get user: &{err}")
         }
     }
 
+
+    ctx := context::New(context::Main)
+    for fn(ctx: &context::Context)(ctx) bool {
+         if ctx.isactive() {
+            return true
+    } {
+        result = sub_user_update(&ctx, &linkuser)
+        match result {
+            Ok(user) => {
+                std::print("User: &{user.Name} (@&{user.Username})")
+            }
+
+            Err(err) => {
+                std::print("Failed to get user: &{err}")
+                ctx::canel()
+            }
+        } 
+    }
     0
 }
