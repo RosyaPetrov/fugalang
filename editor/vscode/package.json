@@ -1,0 +1,48 @@
+{
+  "name": "fugu-language",
+  "displayName": "Fugu Language",
+  "description": "Syntax highlighting and editor support for the Fugu programming language.",
+  "version": "0.0.6",
+  "publisher": "fugalang",
+  "license": "GPL-3.0-or-later",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "fugu",
+        "aliases": [
+          "Fugu",
+          "fugu"
+        ],
+        "extensions": [
+          ".f",
+          ".fg",
+          ".fugu"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./images/fugu-light.svg",
+          "dark": "./images/fugu-dark.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "fugu",
+        "scopeName": "source.fugu",
+        "path": "./syntaxes/fugu.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "fugu",
+        "path": "./snippets/fugu.json"
+      }
+    ]
+  }
+}

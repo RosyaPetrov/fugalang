@@ -252,8 +252,8 @@ func (tk Token) Literal(source *[]byte) []byte {
 
 var keywords = map[string]Kind{
 	// Module declaration and import
-	"mod": MODULE,
-	"use": USE,
+	"module": MODULE,
+	"use":    USE,
 
 	// Data type and variable declarations
 	"fn":        FN,
