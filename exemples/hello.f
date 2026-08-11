@@ -10,13 +10,14 @@ struct People<T> {
 
 fn getname() -> People<str> {
     let name: mut str = "Name"
-    let people: People{
+    let people: mut People {
         Name: name,
     }
-    return people
+
+    people
 }
 
-fn main() -> int {
+fn main() -> i8 {
     std::print("Hello, &{getname().Name}!")
     return 0
 }

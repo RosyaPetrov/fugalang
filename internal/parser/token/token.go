@@ -30,6 +30,7 @@ const (
 
 	// Declaration keywords
 	FN
+	IMPL
 	LET
 	MUT
 	CONST
@@ -257,6 +258,7 @@ var keywords = map[string]Kind{
 
 	// Data type and variable declarations
 	"fn":        FN,
+	"impl":      IMPL,
 	"let":       LET,
 	"mut":       MUT,
 	"const":     CONST,
@@ -322,6 +324,8 @@ func (tk Kind) String() string {
 		return "USE"
 	case FN:
 		return "FN"
+	case IMPL:
+		return "IMPL"
 	case LET:
 		return "LET"
 	case MUT:
