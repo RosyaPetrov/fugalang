@@ -37,7 +37,7 @@ impl User {
     let lresult: Result<User, str> = getuser(url)
     goto SEND_DATA
 
-    START_SUB:
+    for {
         for fn(lresult: mut &Result<User, str>) bool (lresult) { 
             let result: Result<User, str> = getuser(url)
             if !(lresult == result) {
@@ -59,7 +59,7 @@ impl User {
             }
 
             async::return lresult
-            goto START_SUB
+    }
 }
 
 fn getuser(url: &str) -> Result<User, str> {
