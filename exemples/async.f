@@ -38,29 +38,28 @@ impl User {
     goto SEND_DATA
 
     START_SUB:
-    for fn(lresult: mut &Result<User, str>)(lresult) bool { 
-        let result: Result<User, str> = getuser(url)
-        if !(lresult == result) {
-            lresult = result
-            return false
+        for fn(lresult: mut &Result<User, str>) bool (lresult) { 
+            let result: Result<User, str> = getuser(url)
+            if !(lresult == result) {
+                lresult = result
+                return false
+            }
+            return true
+        } {
+        time::sleep(1 * time::second) 
         }
-        return true
-    } {
-       time::sleep(1 * time::second) 
-    }
 
-    if !ctx.isactive() {
-        return Err("Context is inactive")
+        SEND_DATA:
+            if !ctx.isactive() {
+                return Err("Context is inactive")
+            }
 
-    }
+            if user != none {
+                user.Value(lresult)
+            }
 
-    SEND_DATA:
-    if !(user == none) {
-        user.Value(lresult)
-    }
-
-    async::return lresult
-    goto START_SUB
+            async::return lresult
+            goto START_SUB
 }
 
 fn getuser(url: &str) -> Result<User, str> {
@@ -84,11 +83,11 @@ fn main() -> i8 {
 
 
     ctx := context::New(context::Main)
-    for fn(ctx: &context::Context)(ctx) bool {
+    for fn(ctx: &context::Context) bool (ctx) {
          if ctx.isactive() {
             return true
     } {
-        result = sub_user_update(&ctx, &linkuser)
+        result = async sub_user_update(&ctx, &linkuser)
         match result {
             Ok(user) => {
                 std::print("User: &{user.Name} (@&{user.Username})")
