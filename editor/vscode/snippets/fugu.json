@@ -1,0 +1,43 @@
+{
+  "function": {
+    "prefix": "fn",
+    "body": [
+      "fn ${1:name}(${2}) -> ${3:int} {",
+      "    ${0}",
+      "}"
+    ],
+    "description": "Create a Fugu function"
+  },
+  "main function": {
+    "prefix": "main",
+    "body": [
+      "fn main() -> int {",
+      "    ${0:return 0}",
+      "}"
+    ],
+    "description": "Create a Fugu main function"
+  },
+  "struct": {
+    "prefix": "struct",
+    "body": [
+      "struct ${1:Name}${2:<T>} {",
+      "    ${3:pub field: mut T}",
+      "}"
+    ],
+    "description": "Create a Fugu struct"
+  },
+  "let mutable": {
+    "prefix": "letm",
+    "body": "let ${1:name}: mut ${2:type} = ${0:value}",
+    "description": "Create a mutable let binding"
+  },
+  "use block": {
+    "prefix": "use",
+    "body": [
+      "use (",
+      "    \"${1:std}\"",
+      ")"
+    ],
+    "description": "Create a Fugu use block"
+  }
+}
