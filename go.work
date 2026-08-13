@@ -1,7 +1,0 @@
-go 1.26.5
-
-use (
-	.
-	./pkg/colorista
-	./pkg/digreyt
-)

@@ -1,3 +1,14 @@
 bin/
+target/
+
+# Cargo / Rust
+#! Cargo.lock
+
+# OS / editor cruft
 **/.DS_Store
 **/.fugu/
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
