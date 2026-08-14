@@ -5,3 +5,18 @@ version = 4
 [[package]]
 name = "fuga"
 version = "0.1.0"
+dependencies = [
+ "lexer",
+ "token",
+]
+
+[[package]]
+name = "lexer"
+version = "0.1.0"
+dependencies = [
+ "token",
+]
+
+[[package]]
+name = "token"
+version = "0.1.0"
