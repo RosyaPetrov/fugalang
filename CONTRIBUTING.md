@@ -11,7 +11,7 @@
 #### Клонируй:
 
 ```bash
-git clone https://github.com/yourname/fugu.git
+git clone https://github.com/fugalang/fuga.git
 ```
 
 #### Создай ветку:
