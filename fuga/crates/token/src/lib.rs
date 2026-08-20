@@ -1,92 +1,92 @@
 #[derive(Debug, Clone, PartialEq)]
 pub enum TokenType {
     Eof,
-    NewLine, // \n
-    Whitespace { chars: Vec<Whitespace> }, //  
+    NewLine,                                      // \n
+    Whitespace { chars: Vec<Whitespace> },        //
     Comment { literal: String, multiline: bool }, // // comment
 
     Identifier { literal: String }, // var
 
-    Float { literal: f64 }, // 1.4
-    Int { literal: i64 }, // 123
-    String { literal: String }, // "string"
+    Float { literal: f64 },        // 1.4
+    Int { literal: i64 },          // 123
+    String { literal: String },    // "string"
     RawString { literal: String }, // `string`
-    Char { literal: char }, // 'с'
+    Char { literal: char },        // 'с'
 
     Module, // module
-    Use, // use
-    Pub, // pub
-    Fn, // fn
-    Impl, // impl
-    Let, // let
-    Mut, // mut
-    Const, // const
-    If, // if
-    Else, // else
+    Use,    // use
+    Pub,    // pub
+    Fn,     // fn
+    Impl,   // impl
+    Let,    // let
+    Mut,    // mut
+    Const,  // const
+    If,     // if
+    Else,   // else
     Switch, // switch
     Select, // select
-    Case, // case
-    Enum, // enum
-    Match, // match
-    For, // for
-    Defer, // defer
+    Case,   // case
+    Enum,   // enum
+    Match,  // match
+    For,    // for
+    Defer,  // defer
     Unsafe, // unsafe
 
-    Plus, // +
-    Minus, // -
+    Plus,     // +
+    Minus,    // -
     Multiply, // *
-    Divide, // /
-    Modulo, // %
-    Caret, // ^
+    Divide,   // /
+    Modulo,   // %
+    Caret,    // ^ Power and BitXor
 
-    Equal, // ==
-    NotEqual, // !=
-    Less, // <
-    LessEqual, // <=
-    Greater, // >
+    Equal,        // ==
+    NotEqual,     // !=
+    Less,         // <
+    LessEqual,    // <=
+    Greater,      // >
     GreaterEqual, // >=
 
-    ShortDeclare, // :=
-    Assign, // =
-    PlusAssign, // +=
-    MinusAssign, // -=
+    ShortDeclare,   // :=
+    Assign,         // =
+    PlusAssign,     // +=
+    MinusAssign,    // -=
     MultiplyAssign, // *=
-    DivideAssign, // /=
-    ModuloAssign, // %=
-    PowerAssign, // ^=
+    DivideAssign,   // /=
+    ModuloAssign,   // %=
+    PowerAssign,    // ^=
 
     LogicalAnd, // &&
-    LogicalOr, // ||
+    LogicalOr,  // ||
 
-    Ampersand, // &
-    BitOr, // |
-    BitNot, // ~
+    Ampersand, // & Ref and BitAnd
+    BitOr,     // |
+    BitNot,    // ~
 
-    LeftShift, // <<
+    LeftShift,  // <<
     RightShift, // >>
 
-    Arrow, // ->
+    Arrow,    // ->
     FatArrow, // =>
-    Range, // ..
-    Variadic, // ... 
+    Range,    // ..
+    Variadic, // ...
 
     Directive, // #
 
-    LeftParen, // (
-    RightParen, // )
-    LeftBrace, // {
-    RightBrace, // }
-    LeftBracket, // [
+    LeftParen,    // (
+    RightParen,   // )
+    LeftBrace,    // {
+    RightBrace,   // }
+    LeftBracket,  // [
     RightBracket, // ]
 
-    Bang, // !
+    Bang,     // !
     Question, // ?
 
-    Comma, // ,
-    Dot, // . 
-    Colon, // :
+    Comma,         // ,
+    Dot,           // .
+    Colon,         // :
     PathSeparator, // ::
-    Semicolon, // ;
+    Semicolon,     // ;
 
     Illegal { literal: String },
 }
@@ -117,13 +117,7 @@ pub struct Token {
 }
 
 impl Token {
-    pub fn new(
-        token_type: TokenType,
-        span: Span
-    ) -> Self {
-        Self {
-            token_type,
-            span,
-        }
+    pub fn new(token_type: TokenType, span: Span) -> Self {
+        Self { token_type, span }
     }
 }
