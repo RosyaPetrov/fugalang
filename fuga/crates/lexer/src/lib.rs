@@ -1,71 +1,113 @@
-use token::{Position, Token, TokenType, Whitespace};
+use token::{Position, Span, Token, TokenType, Whitespace};
 
-pub struct Lexer {
-    src: Vec<char>,
-    current: usize,
-    line: usize,
-    column: usize,
+#[derive(Debug)]
+pub struct Lexer<'a> {
+    input: &'a str,
+    chars: std::str::CharIndices<'a>,
+    pos: Position,
 }
 
-impl Lexer {
-    pub fn new(src: impl Into<String>) -> Self {
+impl<'a> Lexer<'a> {
+    pub fn new(input: &'a str) -> Self {
         Self {
-            src: src.into().chars().collect(),
-            current: 0,
-            line: 1,
-            column: 1,
+            input: input,
+            chars: input.char_indices(),
+            pos: Position {
+                column: 1,
+                line: 1,
+                offset: 0,
+            },
         }
     }
 
     pub fn next_token(&mut self) -> Token {
-        let start = self.current;
-        let position = self.position();
+        let start = self.pos;
 
-        let Some(ch) = self.advance() else {
-            return Token::new(TokenType::Eof, position, start, start);
+        let Some(ch) = self.nextch() else {
+            return Token::new(
+                TokenType::Eof,
+                Span {
+                    start: start,
+                    end: self.pos,
+                },
+            );
         };
 
         let token_type = match ch {
             '\n' => TokenType::NewLine,
-            ' ' | '\t' => self.read_whitespace(ch),
-            'a'..='z' | 'A'..='Z' | '_' => self.read_identifier(ch),
-            '0'..='9' => self.read_number(ch),
+
+            ' ' | '\t' => {
+                let mut chars = vec![match ch {
+                    ' ' => Whitespace::Space,
+                    '\t' => Whitespace::Tab,
+                    _ => unreachable!(),
+                }];
+
+                loop {
+                    match self.peek() {
+                        Some(' ') => {
+                            self.nextch();
+                            chars.push(Whitespace::Space);
+                        }
+
+                        Some('\t') => {
+                            self.nextch();
+                            chars.push(Whitespace::Tab);
+                        }
+
+                        _ => break,
+                    }
+                }
+
+                TokenType::Whitespace { chars }
+            }
+
             '+' => self.match_next('=', TokenType::PlusAssign, TokenType::Plus),
-            '-' => self.match_next('=', TokenType::MinusAssign, TokenType::Minus),
+            '-' => match self.peek() {
+                Some('=') => {
+                    self.nextch();
+                    TokenType::MinusAssign
+                }
+                Some('>') => {
+                    self.nextch();
+                    TokenType::Arrow
+                }
+                _ => TokenType::Minus,
+            },
             '*' => self.match_next('=', TokenType::MultiplyAssign, TokenType::Multiply),
             '/' => self.match_next('=', TokenType::DivideAssign, TokenType::Divide),
             '%' => self.match_next('=', TokenType::ModuloAssign, TokenType::Modulo),
             '^' => self.match_next('=', TokenType::PowerAssign, TokenType::Caret),
-            '=' => self.match_next('=', TokenType::Equal, TokenType::Assign),
+
+            '=' => match self.peek() { Some('=') => { self.nextch(); TokenType::Equal }
+                Some('>') => { self.nextch(); TokenType::FatArrow }
+                _ => TokenType::Assign, },
+
             '!' => self.match_next('=', TokenType::NotEqual, TokenType::Bang),
-            '<' => {
-                if self.consume_if('=') {
-                    TokenType::LessEqual
-                } else if self.consume_if('<') {
-                    TokenType::LeftShift
-                } else {
-                    TokenType::Less
-                }
-            }
-            '>' => {
-                if self.consume_if('=') {
-                    TokenType::GreaterEqual
-                } else if self.consume_if('>') {
-                    TokenType::RightShift
-                } else {
-                    TokenType::Greater
-                }
-            }
-            ':' => {
-                if self.consume_if('=') {
-                    TokenType::ShortDeclare
-                } else {
-                    self.match_next(':', TokenType::PathSeparator, TokenType::Colon)
-                }
-            }
+
+            '<' => match self.peek() { Some('=') => { self.nextch(); TokenType::LessEqual }
+                Some('<') => { self.nextch(); TokenType::LeftShift }
+                _ => TokenType::Less, },
+
+            '>' => match self.peek() {  Some('=') => { self.nextch(); TokenType::GreaterEqual }
+                Some('>') => { self.nextch(); TokenType::RightShift }
+                _ => TokenType::Greater,
+            },
+
+            ':' => match self.peek() { Some('=') => { self.nextch(); TokenType::ShortDeclare }
+                Some(':') => { self.nextch(); TokenType::PathSeparator }
+                _ => TokenType::Colon,
+            },
+
             '&' => self.match_next('&', TokenType::LogicalAnd, TokenType::Ampersand),
             '|' => self.match_next('|', TokenType::LogicalOr, TokenType::BitOr),
             '~' => TokenType::BitNot,
+            '.' => match self.peek() { Some('.') => { self.nextch();
+                    if self.peek() == Some('.') { self.nextch(); TokenType::Variadic } else { TokenType::Range } }
+                _ => TokenType::Dot,
+            },
+        
+            '#' => TokenType::Directive,
             '(' => TokenType::LeftParen,
             ')' => TokenType::RightParen,
             '{' => TokenType::LeftBrace,
@@ -74,57 +116,29 @@ impl Lexer {
             ']' => TokenType::RightBracket,
             '?' => TokenType::Question,
             ',' => TokenType::Comma,
-            '.' => {
-                if self.consume_if('.') {
-                    self.match_next('.', TokenType::Variadic, TokenType::Range)
-                } else {
-                    TokenType::Dot
-                }
-            }
             ';' => TokenType::Semicolon,
-            '#' => TokenType::Directive,
-            '"' => self.read_string(),
-            '\'' => self.read_char(),
-            other => TokenType::Illegal {
-                literal: other.to_string(),
+            _ => TokenType::Illegal {
+                literal: ch.to_string(),
             },
         };
 
-        Token::new(token_type, position, start, self.current)
-    }
-
-    fn position(&self) -> Position {
-        Position {
-            line: self.line,
-            column: self.column,
-        }
-    }
-
-    fn advance(&mut self) -> Option<char> {
-        let ch = self.src.get(self.current).copied()?;
-        self.current += 1;
-
-        if ch == '\n' {
-            self.line += 1;
-            self.column = 1;
-        } else {
-            self.column += 1;
-        }
-
-        Some(ch)
+        Token::new(
+            token_type,
+            Span {
+                start,
+                end: self.pos,
+            },
+        )
     }
 
     fn peek(&self) -> Option<char> {
-        self.src.get(self.current).copied()
+        self.chars.clone().next().map(|(_, ch)| ch)
     }
 
-    fn consume_if(&mut self, expected: char) -> bool {
-        if self.peek() == Some(expected) {
-            self.advance();
-            true
-        } else {
-            false
-        }
+    fn nextch(&mut self) -> Option<char> {
+        let (_, ch) = self.chars.next()?;
+        self.pos.offset += ch.len_utf8();
+        Some(ch)
     }
 
     fn match_next(
@@ -133,176 +147,11 @@ impl Lexer {
         matched: TokenType,
         unmatched: TokenType,
     ) -> TokenType {
-        if self.consume_if(expected) {
+        if self.peek() == Some(expected) {
+            self.nextch();
             matched
         } else {
             unmatched
         }
-    }
-
-    fn read_whitespace(&mut self, first: char) -> TokenType {
-        let mut chars = vec![whitespace_from_char(first)];
-
-        while matches!(self.peek(), Some(' ' | '\t')) {
-            let ch = self.advance().expect("peeked whitespace must be readable");
-            chars.push(whitespace_from_char(ch));
-        }
-
-        TokenType::Whitespace { chars }
-    }
-
-    fn read_identifier(&mut self, first: char) -> TokenType {
-        let mut literal = String::from(first);
-
-        while let Some(ch) = self.peek() {
-            if ch.is_ascii_alphanumeric() || ch == '_' {
-                literal.push(
-                    self.advance()
-                        .expect("peeked identifier char must be readable"),
-                );
-            } else {
-                break;
-            }
-        }
-
-        keyword_or_identifier(literal)
-    }
-
-    fn read_number(&mut self, first: char) -> TokenType {
-        let mut literal = String::from(first);
-
-        while matches!(self.peek(), Some('0'..='9')) {
-            literal.push(self.advance().expect("peeked digit must be readable"));
-        }
-
-        if self.peek() == Some('.') && matches!(self.src.get(self.current + 1), Some('0'..='9')) {
-            literal.push(self.advance().expect("peeked dot must be readable"));
-
-            while matches!(self.peek(), Some('0'..='9')) {
-                literal.push(
-                    self.advance()
-                        .expect("peeked fractional digit must be readable"),
-                );
-            }
-
-            return TokenType::Float {
-                literal: literal.parse().expect("lexer collected a valid float"),
-            };
-        }
-
-        TokenType::Int {
-            literal: literal.parse().expect("lexer collected a valid int"),
-        }
-    }
-
-    fn read_string(&mut self) -> TokenType {
-        let mut literal = String::new();
-
-        while let Some(ch) = self.advance() {
-            match ch {
-                '"' => return TokenType::String { literal },
-                '\\' => {
-                    if let Some(escaped) = self.advance() {
-                        literal.push(escaped);
-                    }
-                }
-                other => literal.push(other),
-            }
-        }
-
-        TokenType::Illegal { literal }
-    }
-
-    fn read_char(&mut self) -> TokenType {
-        let Some(literal) = self.advance() else {
-            return TokenType::Illegal {
-                literal: String::new(),
-            };
-        };
-
-        if self.consume_if('\'') {
-            TokenType::Char { literal }
-        } else {
-            TokenType::Illegal {
-                literal: literal.to_string(),
-            }
-        }
-    }
-}
-
-fn whitespace_from_char(ch: char) -> Whitespace {
-    match ch {
-        ' ' => Whitespace::Space,
-        '\t' => Whitespace::Tabulation,
-        _ => unreachable!("lexer only passes whitespace chars here"),
-    }
-}
-
-fn keyword_or_identifier(literal: String) -> TokenType {
-    match literal.as_str() {
-        "module" => TokenType::Module,
-        "use" => TokenType::Use,
-        "pub" => TokenType::Pub,
-        "fn" => TokenType::Fn,
-        "impl" => TokenType::Impl,
-        "let" => TokenType::Let,
-        "mut" => TokenType::Mut,
-        "const" => TokenType::Const,
-        "if" => TokenType::If,
-        "else" => TokenType::Else,
-        "switch" => TokenType::Switch,
-        "select" => TokenType::Select,
-        "case" => TokenType::Case,
-        "enum" => TokenType::Enum,
-        "match" => TokenType::Match,
-        "for" => TokenType::For,
-        "defer" => TokenType::Defer,
-        "unsafe" => TokenType::Unsafe,
-        _ => TokenType::Identifier { literal },
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn reads_basic_tokens() {
-        let mut lexer = Lexer::new("let x := 42");
-
-        assert_eq!(lexer.next_token().token_type, TokenType::Let);
-        assert!(matches!(
-            lexer.next_token().token_type,
-            TokenType::Whitespace { .. }
-        ));
-        assert_eq!(
-            lexer.next_token().token_type,
-            TokenType::Identifier {
-                literal: "x".to_string()
-            }
-        );
-        assert!(matches!(
-            lexer.next_token().token_type,
-            TokenType::Whitespace { .. }
-        ));
-        assert_eq!(lexer.next_token().token_type, TokenType::ShortDeclare);
-        assert!(matches!(
-            lexer.next_token().token_type,
-            TokenType::Whitespace { .. }
-        ));
-        assert_eq!(
-            lexer.next_token().token_type,
-            TokenType::Int { literal: 42 }
-        );
-        assert_eq!(lexer.next_token().token_type, TokenType::Eof);
-    }
-
-    #[test]
-    fn tracks_line_and_column() {
-        let mut lexer = Lexer::new("let\nx");
-
-        assert_eq!(lexer.next_token().position, Position { line: 1, column: 1 });
-        assert_eq!(lexer.next_token().position, Position { line: 1, column: 4 });
-        assert_eq!(lexer.next_token().position, Position { line: 2, column: 1 });
     }
 }

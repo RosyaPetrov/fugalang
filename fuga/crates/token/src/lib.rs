@@ -1,92 +1,92 @@
 #[derive(Debug, Clone, PartialEq)]
 pub enum TokenType {
     Eof,
-    NewLine,
-    Whitespace { chars: Vec<Whitespace> },
-    Comment { literal: String, multiline: bool },
+    NewLine,                                      // \n
+    Whitespace { chars: Vec<Whitespace> },        //
+    Comment { literal: String, multiline: bool }, // // comment
 
-    Identifier { literal: String },
+    Identifier { literal: String }, // var
 
-    Float { literal: f64 },
-    Int { literal: i64 },
-    String { literal: String },
-    RawString { literal: String },
-    Char { literal: char },
+    Float { literal: f64 },        // 1.4
+    Int { literal: i64 },          // 123
+    String { literal: String },    // "string"
+    RawString { literal: String }, // `string`
+    Char { literal: char },        // 'с'
 
-    Module,
-    Use,
-    Pub,
-    Fn,
-    Impl,
-    Let,
-    Mut,
-    Const,
-    If,
-    Else,
-    Switch,
-    Select,
-    Case,
-    Enum,
-    Match,
-    For,
-    Defer,
-    Unsafe,
+    Module, // module
+    Use,    // use
+    Pub,    // pub
+    Fn,     // fn
+    Impl,   // impl
+    Let,    // let
+    Mut,    // mut
+    Const,  // const
+    If,     // if
+    Else,   // else
+    Switch, // switch
+    Select, // select
+    Case,   // case
+    Enum,   // enum
+    Match,  // match
+    For,    // for
+    Defer,  // defer
+    Unsafe, // unsafe
 
-    Plus,
-    Minus,
-    Multiply,
-    Divide,
-    Modulo,
-    Caret,
+    Plus,     // +
+    Minus,    // -
+    Multiply, // *
+    Divide,   // /
+    Modulo,   // %
+    Caret,    // ^ Power and BitXor
 
-    Equal,
-    NotEqual,
-    Less,
-    LessEqual,
-    Greater,
-    GreaterEqual,
+    Equal,        // ==
+    NotEqual,     // !=
+    Less,         // <
+    LessEqual,    // <=
+    Greater,      // >
+    GreaterEqual, // >=
 
-    ShortDeclare,
-    Assign,
-    PlusAssign,
-    MinusAssign,
-    MultiplyAssign,
-    DivideAssign,
-    ModuloAssign,
-    PowerAssign,
+    ShortDeclare,   // :=
+    Assign,         // =
+    PlusAssign,     // +=
+    MinusAssign,    // -=
+    MultiplyAssign, // *=
+    DivideAssign,   // /=
+    ModuloAssign,   // %=
+    PowerAssign,    // ^=
 
-    LogicalAnd,
-    LogicalOr,
+    LogicalAnd, // &&
+    LogicalOr,  // ||
 
-    Ampersand,
-    BitOr,
-    BitNot,
+    Ampersand, // & Ref and BitAnd
+    BitOr,     // |
+    BitNot,    // ~
 
-    LeftShift,
-    RightShift,
+    LeftShift,  // <<
+    RightShift, // >>
 
-    Arrow,
-    FatArrow,
-    Range,
-    Variadic,
+    Arrow,    // ->
+    FatArrow, // =>
+    Range,    // ..
+    Variadic, // ...
 
-    Directive,
+    Directive, // #
 
-    LeftParen,
-    RightParen,
-    LeftBrace,
-    RightBrace,
-    LeftBracket,
-    RightBracket,
+    LeftParen,    // (
+    RightParen,   // )
+    LeftBrace,    // {
+    RightBrace,   // }
+    LeftBracket,  // [
+    RightBracket, // ]
 
-    Bang,
-    Question,
+    Bang,     // !
+    Question, // ?
 
-    Comma,
-    Dot,
-    Colon,
-    PathSeparator,
-    Semicolon,
+    Comma,         // ,
+    Dot,           // .
+    Colon,         // :
+    PathSeparator, // ::
+    Semicolon,     // ;
 
     Illegal { literal: String },
 }
@@ -94,35 +94,30 @@ pub enum TokenType {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Whitespace {
     Space,
-    Tabulation,
+    Tab,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct Position {
+    pub offset: usize,
     pub column: usize,
     pub line: usize,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Copy)]
+pub struct Span {
+    pub start: Position,
+    pub end: Position,
+}
+
+#[derive(Debug, Clone)]
 pub struct Token {
     pub token_type: TokenType,
-    pub position: Position,
-    pub start_offset: usize,
-    pub end_offset: usize,
+    pub span: Span,
 }
 
 impl Token {
-    pub fn new(
-        token_type: TokenType,
-        position: Position,
-        start_offset: usize,
-        end_offset: usize,
-    ) -> Self {
-        Self {
-            token_type,
-            position,
-            start_offset,
-            end_offset,
-        }
+    pub fn new(token_type: TokenType, span: Span) -> Self {
+        Self { token_type, span }
     }
 }
