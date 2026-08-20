@@ -1,6 +1,0 @@
-[submodule "pkg/digreyt"]
-	path = pkg/digreyt
-	url = https://github.com/slavkiy/digreyt.git
-[submodule "pkg/colorista"]
-	path = pkg/colorista
-	url = https://github.com/slavkiy/colorista.git
