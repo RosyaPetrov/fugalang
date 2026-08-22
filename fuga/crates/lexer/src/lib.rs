@@ -60,9 +60,12 @@ impl<'a> Lexer<'a> {
                 TokenType::Whitespace { chars }
             }
 
+            _ if ch.is_ascii_alphabetic() => { return Token::new(self.lex_identifier(ch), Span { start: start, end: self.pos}) }
+            _ if ch.is_ascii_digit() => { return  Token::new(self.lex_number(ch) , Span { start: start, end: self.pos }) }
+
             '"' => { return Token::new(self.lex_string(ch), Span { start: start, end: self.pos }) }
             '`' => { return Token::new(self.lex_raw_string(ch), Span { start: start, end: self.pos }) }
-            _ if ch.is_ascii_digit() => { return  Token::new(self.lex_number(ch) , Span { start: start, end: self.pos }) }
+            '\'' => { return Token::new(self.lex_char(ch), Span { start: start, end: self.pos }) }
 
             '+' => self.match_next('=', TokenType::PlusAssign, TokenType::Plus),
             '-' => match self.peek() { Some('=') => { self.nextch(); TokenType::MinusAssign }
@@ -120,7 +123,7 @@ impl<'a> Lexer<'a> {
         Token::new( token_type, Span { start, end: self.pos, } )
     }
 
-    fn lex_word(&mut self, first: char) -> TokenType {
+    fn lex_identifier(&mut self, first: char) -> TokenType {
         let mut value = String::new();
         value.push(first);
 
@@ -133,11 +136,27 @@ impl<'a> Lexer<'a> {
         }
 
         match value.as_str() {
+            "module" => TokenType::Module,
+            "use" => TokenType::Use,
+            "pub" => TokenType::Pub,
+            "priv" => TokenType::Priv,
             "let" => TokenType::Let,
+            "mut" => TokenType::Mut,
+            "const" => TokenType::Const,
             "fn" => TokenType::Fn,
+            "return" => TokenType::Return,
+            "struct" => TokenType::Struct,
+            "type" => TokenType::Type,
             "if" => TokenType::If,
             "else" => TokenType::Else,
-            "return" => TokenType::Return,
+            "switch" => TokenType::Switch,
+            "case" => TokenType::Case,
+            "select" => TokenType::Select,
+            "enum" => TokenType::Enum,
+            "match" => TokenType::Match,
+            "for" => TokenType::For,
+            "defer" => TokenType::Defer,
+            "unsafe" => TokenType::Unsafe,
 
             _ => TokenType::Identifier {
                 literal: value,
@@ -219,35 +238,45 @@ impl<'a> Lexer<'a> {
     }
 
     fn lex_string(&mut self, first: char) -> TokenType {
-        if first == '"' {
-            let mut value = String::new();
+        if first != '"' {
+            panic!("Expected string literal");
+        }
 
-            loop {
-                let r = self.peek();
-                match r {
-                    Some('"') => {
-                        self.nextch();
-                        return TokenType::String { literal: value };
-                    }
+        let mut value = String::new();
 
-                    Some('\\') => {
-                        // Todo: n, t
-                    }
+        loop {
+            match self.peek() {
+                Some('\\') => {
+                    self.nextch();
 
-                    Some(ch) => {
-                        value.push(ch);
-                        self.nextch();
-                    }
+                    let ch = match self.nextch() {
+                        Some('n') => '\n',
+                        Some('t') => '\t',
+                        Some('r') => '\r',
+                        Some('\\') => '\\',
+                        Some('\'') => '\'',
+                        Some('"') => '"',
+                        Some(ch) => panic!("Unknown escape sequence: \\{}", ch),
+                        None => panic!("Unterminated string"),
+                    };
 
-                    None => {
-                        // Todo error;
-                        panic!("Unterminated string");
+                    value.push(ch);
+                }
 
-                    }
+                Some('"') => {
+                    self.nextch();
+                    return TokenType::String { literal: value };
+                }
+
+                Some(ch) => {
+                    value.push(ch);
+                    self.nextch();
+                }
+
+                None => {
+                    panic!("Unterminated string");
                 }
             }
-        } else {
-            panic!("11")
         }
     }
 
@@ -277,6 +306,46 @@ impl<'a> Lexer<'a> {
             }
         } else {
             panic!("11")
+        }
+    }
+
+    fn lex_char(&mut self, first: char) -> TokenType {
+        if first != '\'' {
+            panic!("Expected char literal");
+        }
+
+        let ch = match self.nextch() {
+            Some('\\') => {
+                match self.nextch() {
+                    Some('n') => '\n',
+                    Some('t') => '\t',
+                    Some('r') => '\r',
+                    Some('\\') => '\\',
+                    Some('\'') => '\'',
+                    Some('"') => '"',
+                    Some(ch) => panic!("Unknown escape sequence: \\{}", ch),
+                    None => panic!("Unterminated char literal"),
+                }
+            }
+
+            Some('\'') => {
+                // ''
+                panic!("Empty char literal");
+            }
+
+            Some(ch) => ch,
+
+            None => {
+                panic!("Unterminated char literal");
+            }
+        };
+
+        match self.nextch() {
+            Some('\'') => TokenType::Char { literal: ch },
+
+            Some(ch) => panic!("Expected closing ', found '{}'", ch),
+
+            None => panic!("Unterminated char literal"),
         }
     }
 

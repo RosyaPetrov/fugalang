@@ -17,8 +17,11 @@ pub enum TokenType {
     Module, // module
     Use,    // use
     Pub,    // pub
+    Priv,   // priv
     Fn,     // fn
     Return, // return
+    Struct, // struct
+    Type,   // type
     Impl,   // impl
     Let,    // let
     Mut,    // mut
