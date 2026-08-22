@@ -7,8 +7,9 @@ pub enum TokenType {
 
     Identifier { literal: String }, // var
 
-    Float { literal: f64 },        // 1.4
-    Int { literal: i64 },          // 123
+    Float { literal: String },     // 1.4
+    Integer { literal: String },   // 123
+    Complex { literal: String },   // 1.3i
     String { literal: String },    // "string"
     RawString { literal: String }, // `string`
     Char { literal: char },        // 'с'
@@ -16,7 +17,11 @@ pub enum TokenType {
     Module, // module
     Use,    // use
     Pub,    // pub
+    Priv,   // priv
     Fn,     // fn
+    Return, // return
+    Struct, // struct
+    Type,   // type
     Impl,   // impl
     Let,    // let
     Mut,    // mut
