@@ -1,3 +1,1 @@
-pub struct Program {
-
-}
+pub struct Program {}

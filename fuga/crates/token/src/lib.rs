@@ -14,6 +14,9 @@ pub enum TokenKind {
     RawString { literal: String }, // `string`
     Char { literal: char },        // 'с'
 
+    True,  // true
+    False, // false
+
     Module, // module
     Use,    // use
     Pub,    // pub

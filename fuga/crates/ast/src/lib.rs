@@ -1,8 +1,8 @@
-pub mod expr;
-pub mod stmt;
 pub mod decl;
-pub mod ty;
+pub mod expr;
 pub mod pattern;
+pub mod stmt;
+pub mod ty;
 
 pub mod ast;
 

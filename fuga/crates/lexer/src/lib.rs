@@ -220,6 +220,9 @@ impl<'a> Lexer<'a> {
             "defer" => TokenKind::Defer,
             "unsafe" => TokenKind::Unsafe,
 
+            "true" => TokenKind::True,
+            "false" => TokenKind::False,
+
             _ => TokenKind::Identifier { literal: value },
         }
     }
