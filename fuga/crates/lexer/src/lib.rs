@@ -223,6 +223,7 @@ impl<'a> Lexer<'a> {
             "fn" => TokenKind::Fn,
             "return" => TokenKind::Return,
             "struct" => TokenKind::Struct,
+            "interface" => TokenKind::Interface,
             "type" => TokenKind::Type,
             "if" => TokenKind::If,
             "else" => TokenKind::Else,

@@ -17,28 +17,29 @@ pub enum TokenKind {
     True,  // true
     False, // false
 
-    Module, // module
-    Use,    // use
-    Pub,    // pub
-    Priv,   // priv
-    Fn,     // fn
-    Return, // return
-    Struct, // struct
-    Type,   // type
-    Impl,   // impl
-    Let,    // let
-    Mut,    // mut
-    Const,  // const
-    If,     // if
-    Else,   // else
-    Switch, // switch
-    Select, // select
-    Case,   // case
-    Enum,   // enum
-    Match,  // match
-    For,    // for
-    Defer,  // defer
-    Unsafe, // unsafe
+    Module,    // module
+    Use,       // use
+    Pub,       // pub
+    Priv,      // priv
+    Fn,        // fn
+    Return,    // return
+    Struct,    // struct
+    Interface, // interface
+    Type,      // type
+    Impl,      // impl
+    Let,       // let
+    Mut,       // mut
+    Const,     // const
+    If,        // if
+    Else,      // else
+    Switch,    // switch
+    Select,    // select
+    Case,      // case
+    Enum,      // enum
+    Match,     // match
+    For,       // for
+    Defer,     // defer
+    Unsafe,    // unsafe
 
     Plus,     // +
     Minus,    // -
