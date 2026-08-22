@@ -1,6 +1,7 @@
-use crate::ParseError;
+use crate::{ParseError};
 use lexer::Lexer;
 use token::{Token, TokenKind};
+use ast::{Program};
 
 pub struct Parser<'a> {
     lexer: Lexer<'a>,
@@ -18,6 +19,10 @@ impl<'a> Parser<'a> {
             lookahead: None,
         }
     }
+
+    pub fn parse() -> Result<Program, ParseError> {
+        return Ok(Program{});
+    } 
 
     pub fn peek(&self) -> &Token {
         &self.current
