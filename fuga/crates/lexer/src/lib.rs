@@ -61,6 +61,7 @@ impl<'a> Lexer<'a> {
             }
 
             '"' => { return Token::new(self.lex_string(ch), Span { start: start, end: self.pos }) }
+            '`' => { return Token::new(self.lex_raw_string(ch), Span { start: start, end: self.pos }) }
             _ if ch.is_ascii_digit() => { return  Token::new(self.lex_number(ch) , Span { start: start, end: self.pos }) }
 
             '+' => self.match_next('=', TokenType::PlusAssign, TokenType::Plus),
@@ -241,6 +242,35 @@ impl<'a> Lexer<'a> {
                     None => {
                         // Todo error;
                         panic!("Unterminated string");
+
+                    }
+                }
+            }
+        } else {
+            panic!("11")
+        }
+    }
+
+    fn lex_raw_string(&mut self, first: char) -> TokenType {
+        if first == '`' {
+            let mut value = String::new();
+
+            loop {
+                let r = self.peek();
+                match r {
+                    Some('`') => {
+                        self.nextch();
+                        return TokenType::String { literal: value };
+                    }
+
+                    Some(ch) => {
+                        value.push(ch);
+                        self.nextch();
+                    }
+
+                    None => {
+                        // Todo error;
+                        panic!("Unterminated raw string");
 
                     }
                 }
