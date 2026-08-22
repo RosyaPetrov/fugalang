@@ -7,9 +7,9 @@ pub enum TokenType {
 
     Identifier { literal: String }, // var
 
-    Float { literal: f64 },        // 1.4
-    Integer { literal: i64 },      // 123
-    Complex { literal: String },   // 1.3i 
+    Float { literal: String },     // 1.4
+    Integer { literal: String },   // 123
+    Complex { literal: String },   // 1.3i
     String { literal: String },    // "string"
     RawString { literal: String }, // `string`
     Char { literal: char },        // 'с'
