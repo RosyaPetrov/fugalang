@@ -1,4 +1,4 @@
-use token::{Position, Span, Token, TokenType, Whitespace};
+use token::{Position, Span, Token, TokenKind, Whitespace};
 
 #[derive(Debug)]
 pub struct Lexer<'a> {
@@ -23,7 +23,7 @@ impl<'a> Lexer<'a> {
 
         let Some(ch) = self.nextch() else {
             return Token::new(
-                TokenType::Eof,
+                TokenKind::Eof,
                 Span {
                     start: start,
                     end: self.pos,
@@ -31,8 +31,8 @@ impl<'a> Lexer<'a> {
             );
         };
 
-        let token_type = match ch {
-            '\n' => TokenType::NewLine,
+        let kind = match ch {
+            '\n' => TokenKind::NewLine,
 
             ' ' | '\t' | '\r' => {
                 let mut chars = vec![match ch {
@@ -58,7 +58,7 @@ impl<'a> Lexer<'a> {
                     }
                 }
 
-                TokenType::Whitespace { chars }
+                TokenKind::Whitespace { chars }
             }
 
             '/' => match self.peek() {
@@ -66,10 +66,10 @@ impl<'a> Lexer<'a> {
 
                 Some('=') => {
                     self.nextch();
-                    TokenType::DivideAssign
+                    TokenKind::DivideAssign
                 }
 
-                _ => TokenType::Divide,
+                _ => TokenKind::Divide,
             },
 
             _ if is_word_char(ch) => self.lex_identifier(ch),
@@ -79,105 +79,105 @@ impl<'a> Lexer<'a> {
             '`' => self.lex_raw_string(),
             '\'' => self.lex_char(ch),
 
-            '+' => self.match_next('=', TokenType::PlusAssign, TokenType::Plus),
+            '+' => self.match_next('=', TokenKind::PlusAssign, TokenKind::Plus),
             '-' => match self.peek() {
                 Some('=') => {
                     self.nextch();
-                    TokenType::MinusAssign
+                    TokenKind::MinusAssign
                 }
                 Some('>') => {
                     self.nextch();
-                    TokenType::Arrow
+                    TokenKind::Arrow
                 }
-                _ => TokenType::Minus,
+                _ => TokenKind::Minus,
             },
-            '*' => self.match_next('=', TokenType::MultiplyAssign, TokenType::Multiply),
-            '%' => self.match_next('=', TokenType::ModuloAssign, TokenType::Modulo),
-            '^' => self.match_next('=', TokenType::PowerAssign, TokenType::Caret),
+            '*' => self.match_next('=', TokenKind::MultiplyAssign, TokenKind::Multiply),
+            '%' => self.match_next('=', TokenKind::ModuloAssign, TokenKind::Modulo),
+            '^' => self.match_next('=', TokenKind::PowerAssign, TokenKind::Caret),
 
             '=' => match self.peek() {
                 Some('=') => {
                     self.nextch();
-                    TokenType::Equal
+                    TokenKind::Equal
                 }
                 Some('>') => {
                     self.nextch();
-                    TokenType::FatArrow
+                    TokenKind::FatArrow
                 }
-                _ => TokenType::Assign,
+                _ => TokenKind::Assign,
             },
 
-            '!' => self.match_next('=', TokenType::NotEqual, TokenType::Bang),
+            '!' => self.match_next('=', TokenKind::NotEqual, TokenKind::Bang),
 
             '<' => match self.peek() {
                 Some('=') => {
                     self.nextch();
-                    TokenType::LessEqual
+                    TokenKind::LessEqual
                 }
                 Some('<') => {
                     self.nextch();
-                    TokenType::LeftShift
+                    TokenKind::LeftShift
                 }
-                _ => TokenType::Less,
+                _ => TokenKind::Less,
             },
 
             '>' => match self.peek() {
                 Some('=') => {
                     self.nextch();
-                    TokenType::GreaterEqual
+                    TokenKind::GreaterEqual
                 }
                 Some('>') => {
                     self.nextch();
-                    TokenType::RightShift
+                    TokenKind::RightShift
                 }
-                _ => TokenType::Greater,
+                _ => TokenKind::Greater,
             },
 
             ':' => match self.peek() {
                 Some('=') => {
                     self.nextch();
-                    TokenType::ShortDeclare
+                    TokenKind::ShortDeclare
                 }
                 Some(':') => {
                     self.nextch();
-                    TokenType::PathSeparator
+                    TokenKind::PathSeparator
                 }
-                _ => TokenType::Colon,
+                _ => TokenKind::Colon,
             },
 
-            '&' => self.match_next('&', TokenType::LogicalAnd, TokenType::Ampersand),
-            '|' => self.match_next('|', TokenType::LogicalOr, TokenType::BitOr),
-            '~' => TokenType::BitNot,
+            '&' => self.match_next('&', TokenKind::LogicalAnd, TokenKind::Ampersand),
+            '|' => self.match_next('|', TokenKind::LogicalOr, TokenKind::BitOr),
+            '~' => TokenKind::BitNot,
             '.' => match self.peek() {
                 Some('.') => {
                     self.nextch();
                     if self.peek() == Some('.') {
                         self.nextch();
-                        TokenType::Variadic
+                        TokenKind::Variadic
                     } else {
-                        TokenType::Range
+                        TokenKind::Range
                     }
                 }
-                _ => TokenType::Dot,
+                _ => TokenKind::Dot,
             },
 
-            '#' => TokenType::Directive,
-            '(' => TokenType::LeftParen,
-            ')' => TokenType::RightParen,
-            '{' => TokenType::LeftBrace,
-            '}' => TokenType::RightBrace,
-            '[' => TokenType::LeftBracket,
-            ']' => TokenType::RightBracket,
-            '?' => TokenType::Question,
-            ',' => TokenType::Comma,
-            ';' => TokenType::Semicolon,
-            _ => TokenType::Illegal {
+            '#' => TokenKind::Directive,
+            '(' => TokenKind::LeftParen,
+            ')' => TokenKind::RightParen,
+            '{' => TokenKind::LeftBrace,
+            '}' => TokenKind::RightBrace,
+            '[' => TokenKind::LeftBracket,
+            ']' => TokenKind::RightBracket,
+            '?' => TokenKind::Question,
+            ',' => TokenKind::Comma,
+            ';' => TokenKind::Semicolon,
+            _ => TokenKind::Illegal {
                 literal: ch.to_string(),
             },
         };
 
         Token::new(
-            token_type,
+            kind,
             Span {
                 start,
                 end: self.pos,
@@ -185,7 +185,7 @@ impl<'a> Lexer<'a> {
         )
     }
 
-    fn lex_identifier(&mut self, first: char) -> TokenType {
+    fn lex_identifier(&mut self, first: char) -> TokenKind {
         let mut value = String::new();
         value.push(first);
 
@@ -198,33 +198,33 @@ impl<'a> Lexer<'a> {
         }
 
         match value.as_str() {
-            "module" => TokenType::Module,
-            "use" => TokenType::Use,
-            "pub" => TokenType::Pub,
-            "priv" => TokenType::Priv,
-            "let" => TokenType::Let,
-            "mut" => TokenType::Mut,
-            "const" => TokenType::Const,
-            "fn" => TokenType::Fn,
-            "return" => TokenType::Return,
-            "struct" => TokenType::Struct,
-            "type" => TokenType::Type,
-            "if" => TokenType::If,
-            "else" => TokenType::Else,
-            "switch" => TokenType::Switch,
-            "case" => TokenType::Case,
-            "select" => TokenType::Select,
-            "enum" => TokenType::Enum,
-            "match" => TokenType::Match,
-            "for" => TokenType::For,
-            "defer" => TokenType::Defer,
-            "unsafe" => TokenType::Unsafe,
+            "module" => TokenKind::Module,
+            "use" => TokenKind::Use,
+            "pub" => TokenKind::Pub,
+            "priv" => TokenKind::Priv,
+            "let" => TokenKind::Let,
+            "mut" => TokenKind::Mut,
+            "const" => TokenKind::Const,
+            "fn" => TokenKind::Fn,
+            "return" => TokenKind::Return,
+            "struct" => TokenKind::Struct,
+            "type" => TokenKind::Type,
+            "if" => TokenKind::If,
+            "else" => TokenKind::Else,
+            "switch" => TokenKind::Switch,
+            "case" => TokenKind::Case,
+            "select" => TokenKind::Select,
+            "enum" => TokenKind::Enum,
+            "match" => TokenKind::Match,
+            "for" => TokenKind::For,
+            "defer" => TokenKind::Defer,
+            "unsafe" => TokenKind::Unsafe,
 
-            _ => TokenType::Identifier { literal: value },
+            _ => TokenKind::Identifier { literal: value },
         }
     }
 
-    fn lex_number(&mut self, first: char) -> TokenType {
+    fn lex_number(&mut self, first: char) -> TokenKind {
         let mut value = String::new();
         value.push(first);
 
@@ -256,10 +256,10 @@ impl<'a> Lexer<'a> {
                 if self.peek() == Some('i') {
                     value.push(self.nextch().unwrap());
 
-                    return TokenType::Complex { literal: value };
+                    return TokenKind::Complex { literal: value };
                 }
 
-                return TokenType::Float { literal: value };
+                return TokenKind::Float { literal: value };
             }
         }
 
@@ -267,13 +267,13 @@ impl<'a> Lexer<'a> {
         if self.peek() == Some('i') {
             value.push(self.nextch().unwrap());
 
-            return TokenType::Complex { literal: value };
+            return TokenKind::Complex { literal: value };
         }
 
-        TokenType::Integer { literal: value }
+        TokenKind::Integer { literal: value }
     }
 
-    fn lex_string(&mut self) -> TokenType {
+    fn lex_string(&mut self) -> TokenKind {
         let mut value = String::new();
 
         loop {
@@ -297,7 +297,7 @@ impl<'a> Lexer<'a> {
 
                 Some('"') => {
                     self.nextch();
-                    return TokenType::String { literal: value };
+                    return TokenKind::String { literal: value };
                 }
 
                 Some('\n') => {
@@ -316,7 +316,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn lex_raw_string(&mut self) -> TokenType {
+    fn lex_raw_string(&mut self) -> TokenKind {
         let mut value = String::new();
 
         loop {
@@ -324,7 +324,7 @@ impl<'a> Lexer<'a> {
             match r {
                 Some('`') => {
                     self.nextch();
-                    return TokenType::RawString { literal: value };
+                    return TokenKind::RawString { literal: value };
                 }
 
                 Some(ch) => {
@@ -340,7 +340,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn lex_char(&mut self, first: char) -> TokenType {
+    fn lex_char(&mut self, first: char) -> TokenKind {
         if first != '\'' {
             panic!("Expected char literal");
         }
@@ -370,7 +370,7 @@ impl<'a> Lexer<'a> {
         };
 
         match self.nextch() {
-            Some('\'') => TokenType::Char { literal: ch },
+            Some('\'') => TokenKind::Char { literal: ch },
 
             Some(ch) => panic!("Expected closing ', found '{}'", ch),
 
@@ -378,7 +378,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn lex_comment(&mut self) -> TokenType {
+    fn lex_comment(&mut self) -> TokenKind {
         match self.peek() {
             // // comment
             Some('/') => {
@@ -394,7 +394,7 @@ impl<'a> Lexer<'a> {
                     literal.push(self.nextch().unwrap());
                 }
 
-                TokenType::Comment {
+                TokenKind::Comment {
                     literal,
                     multiline: false,
                 }
@@ -419,13 +419,13 @@ impl<'a> Lexer<'a> {
                     literal.push(ch);
                 }
 
-                TokenType::Comment {
+                TokenKind::Comment {
                     literal,
                     multiline: true,
                 }
             }
 
-            _ => TokenType::Divide,
+            _ => TokenKind::Divide,
         }
     }
 
@@ -451,9 +451,9 @@ impl<'a> Lexer<'a> {
     fn match_next(
         &mut self,
         expected: char,
-        matched: TokenType,
-        unmatched: TokenType,
-    ) -> TokenType {
+        matched: TokenKind,
+        unmatched: TokenKind,
+    ) -> TokenKind {
         if self.peek() == Some(expected) {
             self.nextch();
             matched

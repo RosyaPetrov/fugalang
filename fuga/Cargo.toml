@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [workspace]
-members = [
-    "crates/lexer",
+members = ["crates/ast",
+    "crates/lexer", "crates/parser",
     "crates/token",
 ]
 

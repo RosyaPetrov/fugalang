@@ -5,7 +5,7 @@ fn main() {
         let token = lexer.next_token();
         println!("{token:?}");
 
-        if token.token_type == token::TokenType::Eof {
+        if token.kind == token::TokenKind::Eof {
             break;
         }
     }

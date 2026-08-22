@@ -1,5 +1,5 @@
 #[derive(Debug, Clone, PartialEq)]
-pub enum TokenType {
+pub enum TokenKind {
     Eof,
     NewLine,                                      // \n
     Whitespace { chars: Vec<Whitespace> },        //
@@ -117,12 +117,12 @@ pub struct Span {
 
 #[derive(Debug, Clone)]
 pub struct Token {
-    pub token_type: TokenType,
+    pub kind: TokenKind,
     pub span: Span,
 }
 
 impl Token {
-    pub fn new(token_type: TokenType, span: Span) -> Self {
-        Self { token_type, span }
+    pub fn new(kind: TokenKind, span: Span) -> Self {
+        Self { kind, span }
     }
 }
