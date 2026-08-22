@@ -74,7 +74,7 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn error(&self, message: impl Into<String>) -> ParseError {
+    pub fn error(&self, message: impl Into<String>) -> ParseError {
         ParseError::new(self.current.span, message)
     }
 
