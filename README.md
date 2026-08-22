@@ -1,7 +1,8 @@
+<div align="center">
 
 <table>
 <tr>
-<td width="250">
+<td width="600">
 
 <img src="docs/assets/fuga.png" width="250">
 
@@ -31,7 +32,7 @@ fugalang создаётся с упором на:
   <img src="https://img.shields.io/badge/license-Gpl-34ebc9?style=flat-square">
 </p>
 
----
+</div>
 
 ## Содержание
 
