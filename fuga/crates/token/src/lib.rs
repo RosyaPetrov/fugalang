@@ -14,6 +14,9 @@ pub enum TokenKind {
     RawString { literal: String }, // `string`
     Char { literal: char },        // 'с'
 
+    True,  // true
+    False, // false
+
     Module, // module
     Use,    // use
     Pub,    // pub
@@ -66,6 +69,9 @@ pub enum TokenKind {
     Ampersand, // & Ref and BitAnd
     BitOr,     // |
     BitNot,    // ~
+
+    Increment, // ++
+    Decrement, // --
 
     LeftShift,  // <<
     RightShift, // >>

@@ -5,4 +5,6 @@ edition = "2024"
 
 [dependencies]
 token = { path = "../token" }
+ast = { path = "../ast" }
+
 lexer = { path = "../lexer" }
