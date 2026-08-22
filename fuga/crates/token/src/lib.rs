@@ -8,7 +8,8 @@ pub enum TokenType {
     Identifier { literal: String }, // var
 
     Float { literal: f64 },        // 1.4
-    Int { literal: i64 },          // 123
+    Integer { literal: i64 },      // 123
+    Complex { literal: String },   // 1.3i 
     String { literal: String },    // "string"
     RawString { literal: String }, // `string`
     Char { literal: char },        // 'с'
@@ -17,6 +18,7 @@ pub enum TokenType {
     Use,    // use
     Pub,    // pub
     Fn,     // fn
+    Return, // return
     Impl,   // impl
     Let,    // let
     Mut,    // mut
