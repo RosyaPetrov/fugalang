@@ -215,24 +215,34 @@ impl<'a> Lexer<'a> {
         match value.as_str() {
             "module" => TokenKind::Module,
             "use" => TokenKind::Use,
+
             "pub" => TokenKind::Pub,
             "priv" => TokenKind::Priv,
             "let" => TokenKind::Let,
             "mut" => TokenKind::Mut,
             "const" => TokenKind::Const,
+
             "fn" => TokenKind::Fn,
             "return" => TokenKind::Return,
+
             "struct" => TokenKind::Struct,
             "interface" => TokenKind::Interface,
             "type" => TokenKind::Type,
+
             "if" => TokenKind::If,
             "else" => TokenKind::Else,
+            "break" => TokenKind::Break,
+
             "switch" => TokenKind::Switch,
             "case" => TokenKind::Case,
             "select" => TokenKind::Select,
+
             "enum" => TokenKind::Enum,
             "match" => TokenKind::Match,
+
             "for" => TokenKind::For,
+            "continue" => TokenKind::Continue,
+
             "defer" => TokenKind::Defer,
             "unsafe" => TokenKind::Unsafe,
 

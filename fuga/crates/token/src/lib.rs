@@ -32,12 +32,14 @@ pub enum TokenKind {
     Const,     // const
     If,        // if
     Else,      // else
+    Break,     // break
     Switch,    // switch
     Select,    // select
     Case,      // case
     Enum,      // enum
     Match,     // match
     For,       // for
+    Continue,  // continue
     Defer,     // defer
     Unsafe,    // unsafe
 
