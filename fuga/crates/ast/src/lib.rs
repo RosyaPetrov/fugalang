@@ -6,4 +6,4 @@ pub mod ty;
 
 pub mod ast;
 
-pub use ast::Program;
+pub use ast::{Literal, Program};

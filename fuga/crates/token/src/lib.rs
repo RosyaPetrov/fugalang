@@ -70,6 +70,9 @@ pub enum TokenKind {
     BitOr,     // |
     BitNot,    // ~
 
+    Increment, // ++
+    Decrement, // --
+
     LeftShift,  // <<
     RightShift, // >>
 

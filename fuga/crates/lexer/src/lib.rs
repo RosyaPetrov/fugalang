@@ -79,7 +79,18 @@ impl<'a> Lexer<'a> {
             '`' => self.lex_raw_string(),
             '\'' => self.lex_char(ch),
 
-            '+' => self.match_next('=', TokenKind::PlusAssign, TokenKind::Plus),
+            '+' => match self.peek() {
+                Some('=') => {
+                    self.nextch();
+                    TokenKind::PlusAssign
+                }
+                Some('+') => {
+                    self.nextch();
+                    TokenKind::Increment
+                }
+                _ => TokenKind::Plus,
+            },
+
             '-' => match self.peek() {
                 Some('=') => {
                     self.nextch();
@@ -88,6 +99,10 @@ impl<'a> Lexer<'a> {
                 Some('>') => {
                     self.nextch();
                     TokenKind::Arrow
+                }
+                Some('-') => {
+                    self.nextch();
+                    TokenKind::Decrement
                 }
                 _ => TokenKind::Minus,
             },
