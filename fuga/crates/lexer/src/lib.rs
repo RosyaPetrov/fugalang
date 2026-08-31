@@ -176,7 +176,15 @@ impl<'a> Lexer<'a> {
                 _ => TokenKind::Dot,
             },
 
-            '#' => TokenKind::Directive,
+            '#' => match self.peek() {
+                Some('[') => {
+                    self.nextch();
+                    TokenKind::Directive
+                }
+                _ => TokenKind::Illegal {
+                    literal: "#".to_string(),
+                },
+            },
             '(' => TokenKind::LeftParen,
             ')' => TokenKind::RightParen,
             '{' => TokenKind::LeftBrace,
@@ -214,12 +222,11 @@ impl<'a> Lexer<'a> {
 
         match value.as_str() {
             "module" => TokenKind::Module,
-            "use" => TokenKind::Use,
+            "pkg" => TokenKind::Package,
+            "imp" => TokenKind::Import,
 
             "pub" => TokenKind::Pub,
-            "priv" => TokenKind::Priv,
             "let" => TokenKind::Let,
-            "mut" => TokenKind::Mut,
             "const" => TokenKind::Const,
 
             "fn" => TokenKind::Fn,
@@ -235,7 +242,6 @@ impl<'a> Lexer<'a> {
 
             "switch" => TokenKind::Switch,
             "case" => TokenKind::Case,
-            "select" => TokenKind::Select,
 
             "enum" => TokenKind::Enum,
             "match" => TokenKind::Match,

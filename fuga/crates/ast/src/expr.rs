@@ -24,6 +24,19 @@ pub enum Expr {
         callee: Box<Expr>,
         args: Vec<Expr>,
     },
+
+    Function(FunctionExpr),
+}
+
+pub struct FunctionExpr {
+    pub type_params: Vec<String>, // [T]
+    pub params: Vec<Param>,       // ()
+    pub ret_ty: Option<String>,    // можно сделать тип-узел, если нужно
+}
+
+pub struct Param {
+    pub name: Option<String>,
+    pub ty: String,
 }
 
 #[derive(Debug, Clone, Copy)]
