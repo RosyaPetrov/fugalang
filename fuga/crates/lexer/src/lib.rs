@@ -227,6 +227,7 @@ impl<'a> Lexer<'a> {
 
             "pub" => TokenKind::Pub,
             "let" => TokenKind::Let,
+            "mut" => TokenKind::Mut,
             "const" => TokenKind::Const,
 
             "fn" => TokenKind::Fn,

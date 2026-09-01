@@ -1,5 +1,8 @@
 use crate::ast::Literal;
+use crate::decl::Param;
+use crate::ty::Ty;
 
+#[derive(Debug, Clone, PartialEq)]
 pub enum Expr {
     Literal(Literal),
     Name(String),
@@ -19,39 +22,27 @@ pub enum Expr {
         op: BinaryOp,
         right: Box<Expr>,
     },
-
+    // foo[...](arg1: N, arg2: Y)
     Call {
-        callee: Box<Expr>,
-        args: Vec<Expr>,
+        name: String,
+        generics: Vec<Ty>, // ? Generic
+        args: Vec<Param>,
     },
-
-    Function(FunctionExpr),
 }
 
-pub struct FunctionExpr {
-    pub type_params: Vec<String>, // [T]
-    pub params: Vec<Param>,       // ()
-    pub ret_ty: Option<String>,    // можно сделать тип-узел, если нужно
-}
-
-pub struct Param {
-    pub name: Option<String>,
-    pub ty: String,
-}
-
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum UnaryOp {
     Neg, // -
     Not, // !
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum PostfixOp {
     Increment, // ++
     Decrement, // --
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum BinaryOp {
     Add, // +
     Sub, // -

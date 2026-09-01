@@ -28,6 +28,7 @@ pub enum TokenKind {
     Type,      // type
     Impl,      // impl
     Let,       // let
+    Mut,       // mut
     Const,     // const
     If,        // if
     Else,      // else
