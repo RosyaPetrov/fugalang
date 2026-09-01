@@ -39,6 +39,7 @@ pub enum TokenKind {
     Match,     // match
     For,       // for
     Continue,  // continue
+    Goto,      // goto
     Defer,     // defer
     Unsafe,    // unsafe
 
@@ -65,11 +66,8 @@ pub enum TokenKind {
     ModuloAssign,   // %=
     PowerAssign,    // ^=
 
-    LogicalAnd, // &&
-    LogicalOr,  // ||
-
-    Ampersand, // & Ref and BitAnd
-    BitOr,     // |
+    Ampersand, // & Ref and BitAnd and LogicalAnd
+    Or,        // | BitOr and LogicalOr
     BitNot,    // ~
 
     Increment, // ++
@@ -95,11 +93,11 @@ pub enum TokenKind {
     Bang,     // !
     Question, // ?
 
-    Comma,         // ,
-    Dot,           // .
-    Colon,         // :
-    PathSeparator, // ::
-    Semicolon,     // ;
+    Comma,      // ,
+    Dot,        // .
+    Colon,      // :
+    ColonColon, // ::
+    Semicolon,  // ;
 
     Illegal { literal: String },
 }

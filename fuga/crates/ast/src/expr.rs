@@ -1,10 +1,12 @@
-use crate::ast::Literal;
-use crate::decl::Param;
-use crate::ty::Ty;
+use crate::{ast::Literal, pattern::Pattern, stmt::Stmt};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Expr {
     Literal(Literal),
+
+    Match(Match),
+
+    // name
     Name(String),
 
     Unary {
@@ -22,11 +24,19 @@ pub enum Expr {
         op: BinaryOp,
         right: Box<Expr>,
     },
-    // foo[...](arg1: N, arg2: Y)
+
     Call {
-        name: String,
-        generics: Vec<Ty>, // ? Generic
-        args: Vec<Param>,
+        is_lambda: Option<Box<Expr>>,
+        name: Box<Expr>, // Name(String)::Name(String)::Name(String).Name(String)
+        args: Option<Box<Pattern>>,
+        generic: Option<Box<Pattern>>, // [T: expr] Tuple.3
+    },
+
+    Lambda {
+        generics: Option<Box<Pattern>>,     // Generics 1 [T, Y, E]
+        params: Box<Pattern>,               // Tuple (arg1: T, arg2: U)
+        return_types: Option<Box<Pattern>>, // Tuple (T, U) (name: type, name: type)
+        body: Vec<Box<Stmt>>,               // Vec<Stmt> (Stmt, Stmt, Stmt)
     },
 }
 
@@ -56,7 +66,7 @@ pub enum BinaryOp {
     Gt, // >
 
     And, // &&
-    Or,  // ||
+    Or,  // |
 }
 
 impl BinaryOp {
@@ -74,4 +84,16 @@ impl BinaryOp {
             BinaryOp::Mul | BinaryOp::Div => 6,
         }
     }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Match {
+    pub expr: Box<Expr>,
+    pub arms: Vec<MatchArm>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct MatchArm {
+    pub pattern: Pattern,
+    pub body: Box<Stmt>,
 }

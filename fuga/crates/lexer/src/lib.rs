@@ -155,13 +155,13 @@ impl<'a> Lexer<'a> {
                 }
                 Some(':') => {
                     self.nextch();
-                    TokenKind::PathSeparator
+                    TokenKind::ColonColon
                 }
                 _ => TokenKind::Colon,
             },
 
-            '&' => self.match_next('&', TokenKind::LogicalAnd, TokenKind::Ampersand),
-            '|' => self.match_next('|', TokenKind::LogicalOr, TokenKind::BitOr),
+            '&' => TokenKind::Ampersand, // Ref and BitAnd and LogicalAnd
+            '|' => TokenKind::Or,        // BitOr and LogicalOr
             '~' => TokenKind::BitNot,
             '.' => match self.peek() {
                 Some('.') => {
@@ -249,6 +249,8 @@ impl<'a> Lexer<'a> {
 
             "for" => TokenKind::For,
             "continue" => TokenKind::Continue,
+
+            "goto" => TokenKind::Goto,
 
             "defer" => TokenKind::Defer,
             "unsafe" => TokenKind::Unsafe,
