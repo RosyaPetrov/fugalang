@@ -18,9 +18,9 @@ pub enum TokenKind {
     False, // false
 
     Module,    // module
-    Use,       // use
+    Package,   // pkg
+    Import,    // imp
     Pub,       // pub
-    Priv,      // priv
     Fn,        // fn
     Return,    // return
     Struct,    // struct
@@ -34,7 +34,6 @@ pub enum TokenKind {
     Else,      // else
     Break,     // break
     Switch,    // switch
-    Select,    // select
     Case,      // case
     Enum,      // enum
     Match,     // match
@@ -84,7 +83,7 @@ pub enum TokenKind {
     Range,    // ..
     Variadic, // ...
 
-    Directive, // #
+    Directive, // #[
 
     LeftParen,    // (
     RightParen,   // )
