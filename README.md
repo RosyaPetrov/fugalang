@@ -4,17 +4,17 @@
 <tr>
 <td width="600">
 
-<img src="docs/assets/fuga.png" width="450">
+<img src="docs/assets/fgmac.png" width="350">
 
 </td>
 
 <td>
 
-# fuga
+# fugalang
 
 **Современный компилируемый язык программирования.**
 
-fugalang создаётся с упором на:
+fuga создаётся с упором на:
 
 - простоту
 - выразительный лаконичный синтаксис
@@ -42,7 +42,7 @@ fugalang создаётся с упором на:
 
 ```rust
 fn Main() {
-    print("Hello fuga!")
+    std::println!("Hello fuga!")
 }
 ```
 
