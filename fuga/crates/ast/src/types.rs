@@ -4,10 +4,7 @@ use crate::path::Path;
 pub enum Type {
     Unit,
     Primitive(PrimitiveType),
-    Named {
-        path: Path,
-        generics: Vec<Type>,
-    },
+    Named { path: Path, generics: Vec<Type> },
     Generic(String),
 }
 
