@@ -21,7 +21,7 @@ impl<'a> Parser<'a> {
     }
 
     pub fn parse() -> Result<Program, ParseError> {
-        return Ok(Program {});
+        Ok(Program::default())
     }
 
     pub fn peek(&self) -> &Token {

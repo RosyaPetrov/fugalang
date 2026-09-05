@@ -1,0 +1,58 @@
+use crate::{
+    declaration::Parameter,
+    literal::Literal,
+    operator::{BinaryOp, PostfixOp, UnaryOp},
+    path::Path,
+    pattern::Pattern,
+    statement::Block,
+    types::{Generics, Type},
+};
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum Expr {
+    Literal(Literal),
+    Path(Path),
+    Unary {
+        op: UnaryOp,
+        expr: Box<Expr>,
+    },
+    Binary {
+        left: Box<Expr>,
+        op: BinaryOp,
+        right: Box<Expr>,
+    },
+    Postfix {
+        expr: Box<Expr>,
+        op: PostfixOp,
+    },
+    Call(Call),
+    Lambda(Lambda),
+    Match(Match),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Call {
+    pub callee: Box<Expr>,
+    pub args: Vec<Expr>,
+    pub generics: Vec<Type>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Lambda {
+    pub generics: Generics,
+    pub params: Vec<Parameter>,
+    pub return_types: Vec<Type>,
+    pub body: Block,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Match {
+    pub expression: Box<Expr>,
+    pub arms: Vec<MatchArm>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct MatchArm {
+    pub pattern: Pattern,
+    pub body: Block,
+}

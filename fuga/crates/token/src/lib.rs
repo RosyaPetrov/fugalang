@@ -43,45 +43,45 @@ pub enum TokenKind {
     Defer,     // defer
     Unsafe,    // unsafe
 
-    Plus,     // +
-    Minus,    // -
-    Multiply, // *
-    Divide,   // /
-    Modulo,   // %
-    Caret,    // ^ Power and BitXor
+    Plus,    // +
+    Minus,   // -
+    Star,    // *
+    Slash,   // /
+    Percent, // %
+    Caret,   // ^
 
-    Equal,        // ==
-    NotEqual,     // !=
+    EqualEqual,   // ==
+    BangEqual,    // !=
     Less,         // <
     LessEqual,    // <=
     Greater,      // >
     GreaterEqual, // >=
 
-    ShortDeclare,   // :=
-    Assign,         // =
-    PlusAssign,     // +=
-    MinusAssign,    // -=
-    MultiplyAssign, // *=
-    DivideAssign,   // /=
-    ModuloAssign,   // %=
-    PowerAssign,    // ^=
+    ColonEqual,   // :=
+    Equal,        // =
+    PlusEqual,    // +=
+    MinusEqual,   // -=
+    StarEqual,    // *=
+    SlashEqual,   // /=
+    PercentEqual, // %=
+    CaretEqual,   // ^=
 
-    Ampersand, // & Ref and BitAnd and LogicalAnd
-    Or,        // | BitOr and LogicalOr
-    BitNot,    // ~
+    Ampersand, // &
+    Pipe,      // |
+    Tilde,     // ~
 
-    Increment, // ++
-    Decrement, // --
+    PlusPlus,   // ++
+    MinusMinus, // --
 
-    LeftShift,  // <<
-    RightShift, // >>
+    LessLess,       // <<
+    GreaterGreater, // >>
 
-    Arrow,    // ->
-    FatArrow, // =>
-    Range,    // ..
-    Variadic, // ...
+    MinusGreater, // ->
+    EqualGreater, // =>
+    DotDot,       // ..
+    DotDotDot,    // ...
 
-    Directive, // #[
+    HashBracket, // #[
 
     LeftParen,    // (
     RightParen,   // )
