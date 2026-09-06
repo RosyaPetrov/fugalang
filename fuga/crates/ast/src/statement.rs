@@ -9,11 +9,12 @@ pub struct Block {
 pub enum Statement {
     Variable(Variable),
     Expression(Expr),
-    If {
-        condition: Expr,
-        then_branch: Block,
-        else_branch: Option<Box<Statement>>,
+
+    Goto {
+        tag: String,
     },
+
+    If(IfStatement),
     Switch {
         expression: Expr,
         cases: Vec<SwitchCase>,
@@ -33,6 +34,15 @@ pub struct SwitchCase {
     pub pattern: Option<Pattern>,
     pub expression: Option<Expr>,
     pub body: Block,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct IfStatement {
+    // if (condition) {}
+    // if (let var := expr; var > 0) {}
+    pub condition: Expr,
+    pub then_branch: Block,
+    pub else_branch: Option<Box<Statement>>,
 }
 
 #[derive(Debug, Clone, PartialEq)]

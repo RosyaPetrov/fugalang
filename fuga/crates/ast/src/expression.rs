@@ -1,10 +1,10 @@
 use crate::{
     declaration::Parameter,
     literal::Literal,
-    operator::{BinaryOp, PostfixOp, UnaryOp},
+    operator::{AssignOp, BinaryOp, PostfixOp, UnaryOp},
     path::Path,
     pattern::Pattern,
-    statement::Block,
+    statement::{Block, Statement},
     types::{Generics, Type},
 };
 
@@ -21,9 +21,18 @@ pub enum Expr {
         op: BinaryOp,
         right: Box<Expr>,
     },
+    Assign {
+        left: Box<Expr>,
+        op: AssignOp,
+        right: Box<Expr>,
+    },
     Postfix {
         expr: Box<Expr>,
         op: PostfixOp,
+    },
+    Statement {
+        statement: Vec<Box<Statement>>,
+        expression: Box<Expr>,
     },
     Call(Call),
     Lambda(Lambda),

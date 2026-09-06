@@ -10,6 +10,8 @@ pub enum Type {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PrimitiveType {
+    Unit,
+
     Bool,
     Char,
     I8,

@@ -12,6 +12,7 @@ pub enum Declaration {
     Module { name: Path },
     Package { name: Path, modifiers: Modifiers },
     Import { path: Path, alias: Option<String> },
+    Goto { tag: String },
     Variable(Variable),
     Type(TypeDeclaration),
     Struct(StructDeclaration),

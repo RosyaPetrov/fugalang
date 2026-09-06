@@ -16,7 +16,7 @@ pub use declaration::{
 pub use expression::{Call, Expr, Lambda, Match, MatchArm};
 pub use literal::Literal;
 pub use modifiers::{Modifiers, Visibility};
-pub use operator::{BinaryOp, PostfixOp, UnaryOp};
+pub use operator::{AssignOp, BinaryOp, PostfixOp, UnaryOp};
 pub use path::{Path, PathSegment, PathSeparator};
 pub use pattern::{Pattern, PatternField};
 pub use program::Program;
