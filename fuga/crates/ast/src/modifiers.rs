@@ -11,10 +11,11 @@ pub enum Visibility {
 pub struct Modifiers {
     pub visibility: Visibility,
     pub mutable: bool,
+    pub is_macro: bool,
     pub directives: Directives,
 }
 
-// comptim is_unsafe is_macro
+// comptim is_unsafe
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct Directives {
     pub values: Vec<Box<Decl>>, // Directive

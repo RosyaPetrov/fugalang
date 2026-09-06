@@ -1,6 +1,7 @@
 use crate::{
     declaration::Parameter,
     literal::Literal,
+    modifiers::Modifiers,
     operator::{AssignOp, BinaryOp, PostfixOp, UnaryOp},
     path::Path,
     pattern::Pattern,
@@ -44,6 +45,7 @@ pub struct Call {
     pub callee: Box<Expr>,
     pub args: Vec<Expr>,
     pub generics: Vec<Type>,
+    pub modifiers: Modifiers,
 }
 
 #[derive(Debug, Clone, PartialEq)]

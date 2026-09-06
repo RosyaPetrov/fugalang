@@ -32,11 +32,12 @@ pub struct Variable {
     pub modifiers: Modifiers,
 }
 
+// type Name Types = expr defualt value
 #[derive(Debug, Clone, PartialEq)]
 pub struct TypeDeclaration {
     pub name: String,
-    pub generics: Generics,
     pub ty: Type,
+    pub defualt: Box<Expr>,
     pub modifiers: Modifiers,
 }
 
@@ -46,13 +47,6 @@ pub struct Field {
     pub ty: Type,
     pub default: Option<Expr>,
     pub modifiers: Modifiers,
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct Parameter {
-    pub pattern: Pattern,
-    pub ty: Option<Type>,
-    pub default: Option<Expr>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -96,6 +90,13 @@ pub struct Function {
     pub return_types: Vec<Type>,
     pub body: Block,
     pub modifiers: Modifiers,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Parameter {
+    pub pattern: Pattern,
+    pub ty: Option<Type>,
+    pub default: Option<Expr>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
