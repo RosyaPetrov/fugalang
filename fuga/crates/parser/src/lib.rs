@@ -1,10 +1,10 @@
-pub mod decl;
+pub mod declaration;
 pub mod error;
-pub mod expr;
+pub mod expression;
 pub mod parser;
 pub mod pattern;
-pub mod stmt;
-pub mod ty;
+pub mod statement;
+pub mod types;
 
 pub use error::ParseError;
 pub use parser::Parser;

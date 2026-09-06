@@ -66,10 +66,10 @@ impl<'a> Lexer<'a> {
 
                 Some('=') => {
                     self.nextch();
-                    TokenKind::DivideAssign
+                    TokenKind::SlashEqual
                 }
 
-                _ => TokenKind::Divide,
+                _ => TokenKind::Slash,
             },
 
             _ if is_word_char(ch) => self.lex_identifier(ch),
@@ -82,11 +82,11 @@ impl<'a> Lexer<'a> {
             '+' => match self.peek() {
                 Some('=') => {
                     self.nextch();
-                    TokenKind::PlusAssign
+                    TokenKind::PlusEqual
                 }
                 Some('+') => {
                     self.nextch();
-                    TokenKind::Increment
+                    TokenKind::PlusPlus
                 }
                 _ => TokenKind::Plus,
             },
@@ -94,35 +94,35 @@ impl<'a> Lexer<'a> {
             '-' => match self.peek() {
                 Some('=') => {
                     self.nextch();
-                    TokenKind::MinusAssign
+                    TokenKind::MinusEqual
                 }
                 Some('>') => {
                     self.nextch();
-                    TokenKind::Arrow
+                    TokenKind::MinusGreater
                 }
                 Some('-') => {
                     self.nextch();
-                    TokenKind::Decrement
+                    TokenKind::MinusMinus
                 }
                 _ => TokenKind::Minus,
             },
-            '*' => self.match_next('=', TokenKind::MultiplyAssign, TokenKind::Multiply),
-            '%' => self.match_next('=', TokenKind::ModuloAssign, TokenKind::Modulo),
-            '^' => self.match_next('=', TokenKind::PowerAssign, TokenKind::Caret),
+            '*' => self.match_next('=', TokenKind::StarEqual, TokenKind::Star),
+            '%' => self.match_next('=', TokenKind::PercentEqual, TokenKind::Percent),
+            '^' => self.match_next('=', TokenKind::CaretEqual, TokenKind::Caret),
 
             '=' => match self.peek() {
                 Some('=') => {
                     self.nextch();
-                    TokenKind::Equal
+                    TokenKind::EqualEqual
                 }
                 Some('>') => {
                     self.nextch();
-                    TokenKind::FatArrow
+                    TokenKind::EqualGreater
                 }
-                _ => TokenKind::Assign,
+                _ => TokenKind::Equal,
             },
 
-            '!' => self.match_next('=', TokenKind::NotEqual, TokenKind::Bang),
+            '!' => self.match_next('=', TokenKind::BangEqual, TokenKind::Bang),
 
             '<' => match self.peek() {
                 Some('=') => {
@@ -131,7 +131,7 @@ impl<'a> Lexer<'a> {
                 }
                 Some('<') => {
                     self.nextch();
-                    TokenKind::LeftShift
+                    TokenKind::LessLess
                 }
                 _ => TokenKind::Less,
             },
@@ -143,7 +143,7 @@ impl<'a> Lexer<'a> {
                 }
                 Some('>') => {
                     self.nextch();
-                    TokenKind::RightShift
+                    TokenKind::GreaterGreater
                 }
                 _ => TokenKind::Greater,
             },
@@ -151,7 +151,7 @@ impl<'a> Lexer<'a> {
             ':' => match self.peek() {
                 Some('=') => {
                     self.nextch();
-                    TokenKind::ShortDeclare
+                    TokenKind::ColonEqual
                 }
                 Some(':') => {
                     self.nextch();
@@ -160,17 +160,17 @@ impl<'a> Lexer<'a> {
                 _ => TokenKind::Colon,
             },
 
-            '&' => TokenKind::Ampersand, // Ref and BitAnd and LogicalAnd
-            '|' => TokenKind::Or,        // BitOr and LogicalOr
-            '~' => TokenKind::BitNot,
+            '&' => TokenKind::Ampersand,
+            '|' => TokenKind::Pipe,
+            '~' => TokenKind::Tilde,
             '.' => match self.peek() {
                 Some('.') => {
                     self.nextch();
                     if self.peek() == Some('.') {
                         self.nextch();
-                        TokenKind::Variadic
+                        TokenKind::DotDotDot
                     } else {
-                        TokenKind::Range
+                        TokenKind::DotDot
                     }
                 }
                 _ => TokenKind::Dot,
@@ -179,7 +179,7 @@ impl<'a> Lexer<'a> {
             '#' => match self.peek() {
                 Some('[') => {
                     self.nextch();
-                    TokenKind::Directive
+                    TokenKind::HashBracket
                 }
                 _ => TokenKind::Illegal {
                     literal: "#".to_string(),
@@ -463,7 +463,7 @@ impl<'a> Lexer<'a> {
                 }
             }
 
-            _ => TokenKind::Divide,
+            _ => TokenKind::Slash,
         }
     }
 

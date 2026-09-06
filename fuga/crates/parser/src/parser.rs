@@ -21,7 +21,7 @@ impl<'a> Parser<'a> {
     }
 
     pub fn parse() -> Result<Program, ParseError> {
-        return Ok(Program {});
+        Ok(Program::default())
     }
 
     pub fn peek(&self) -> &Token {
@@ -40,6 +40,10 @@ impl<'a> Parser<'a> {
         self.lookahead.as_ref().unwrap()
     }
 
+    pub fn parse_expression(&mut self) -> Result<ast::Expr, ParseError> {
+        self.parse_assignment()
+    }
+
     pub fn at(&self, kind: &TokenKind) -> bool {
         self.current.kind == *kind
     }
@@ -51,10 +55,17 @@ impl<'a> Parser<'a> {
     }
 
     fn next_token(&mut self) -> Token {
-        if let Some(token) = self.lookahead.take() {
-            token
-        } else {
-            self.lexer.next_token()
+        loop {
+            let token = if let Some(token) = self.lookahead.take() {
+                token
+            } else {
+                self.lexer.next_token()
+            };
+
+            match token.kind {
+                TokenKind::Whitespace { .. } | TokenKind::Comment { .. } => continue,
+                _ => return token,
+            }
         }
     }
 

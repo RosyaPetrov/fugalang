@@ -1,35 +1,28 @@
-use crate::{
-    ast::{Field, Literal},
-    expr::Expr,
-};
+use crate::{expression::Expr, literal::Literal, path::Path};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Pattern {
-    // _ =>
     Wildcard,
-
+    Name(String),
     Literal(Literal),
-
-    // Some(x) =>. Tuple.1(x)
     Constructor {
-        name: String,
+        path: Path,
         args: Vec<Pattern>,
     },
-
-    // 1: x, y, z | 2:  x: "", y: 2, z: 'c' | 3: x: T, y: T, z: T | 4: "1", "3"
-    Tuple(Vec<Field>), // Field
-
-    // x: T := expr
-
-    // 1..100
+    Tuple(Vec<Pattern>),
+    Record {
+        fields: Vec<PatternField>,
+    },
     Range {
-        start: Option<Expr>,
-        end: Option<Expr>,
+        start: Option<Box<Expr>>,
+        end: Option<Box<Expr>>,
         inclusive: bool,
     },
+    Expression(Box<Expr>),
+}
 
-    // 1 | 2 | 5
-    // 1 & 2 & 5
-    // !x
-    Expr(Box<Expr>),
+#[derive(Debug, Clone, PartialEq)]
+pub struct PatternField {
+    pub name: String,
+    pub pattern: Pattern,
 }

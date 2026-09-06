@@ -6,7 +6,7 @@ target/
 
 # OS / editor cruft
 **/.DS_Store
-**/.fugu/
+**/.fuga/
 .idea/
 .vscode/
 *.swp
