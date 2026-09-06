@@ -1,3 +1,5 @@
+// Copyright (c) 2026 slavkiy
+
 use crate::{expression::Expr, literal::Literal, path::Path};
 
 #[derive(Debug, Clone, PartialEq)]

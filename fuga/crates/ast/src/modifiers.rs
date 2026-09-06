@@ -1,3 +1,5 @@
+// Copyright (c) 2026 slavkiy
+
 use crate::declaration::Decl;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]

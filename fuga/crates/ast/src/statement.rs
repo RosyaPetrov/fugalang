@@ -1,3 +1,5 @@
+// Copyright (c) 2026 slavkiy
+
 use crate::{declaration::Variable, expression::Expr, pattern::Pattern};
 
 #[derive(Debug, Clone, PartialEq, Default)]
