@@ -4,7 +4,7 @@ use crate::{
     operator::{AssignOp, BinaryOp, PostfixOp, UnaryOp},
     path::Path,
     pattern::Pattern,
-    statement::{Block, Statement},
+    statement::{Block, Stmt},
     types::{Generics, Type},
 };
 
@@ -31,7 +31,7 @@ pub enum Expr {
         op: PostfixOp,
     },
     Statement {
-        statement: Vec<Box<Statement>>,
+        statement: Vec<Box<Stmt>>,
         expression: Box<Expr>,
     },
     Call(Call),

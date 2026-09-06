@@ -8,7 +8,7 @@ use crate::{
 };
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum Declaration {
+pub enum Decl {
     Module { name: Path },
     Package { name: Path, modifiers: Modifiers },
     Import { path: Path, alias: Option<String> },
@@ -84,7 +84,8 @@ pub struct ImplDeclaration {
     pub target: Path,
     pub generics: Generics,
     pub fields: Vec<Field>,
-    pub body: Vec<Declaration>,
+    pub body: Vec<Decl>,
+    pub modifiers: Modifiers,
 }
 
 #[derive(Debug, Clone, PartialEq)]

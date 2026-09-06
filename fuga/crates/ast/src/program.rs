@@ -1,6 +1,6 @@
-use crate::declaration::Declaration;
+use crate::declaration::Decl;
 
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct Program {
-    pub declarations: Vec<Declaration>,
+    pub declarations: Vec<Decl>,
 }
